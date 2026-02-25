@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>local.</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F5F2ED;
+  --ink: #1A1714;
+  --ink-mid: #4A4642;
+  --ink-soft: #8A8480;
+  --ink-faint: #C2BDB8;
+  --accent: #B8340A;
+  --border: #DDD8D0;
+  --card: #FDFAF6;
+  --tag: #EDE9E2;
+  --green: #2A5C40;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Cormorant Garamond', serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── DEMO BAR ── */
+.demo-bar {
+  background: var(--ink);
+  color: var(--ink-faint);
+  text-align: center;
+  padding: 8px 20px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+}
+.demo-bar strong { color: #F5F2ED; font-weight: 400; }
+
+/* ── HEADER ── */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 48px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 200;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 24px;
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+}
+.logo-dot { color: var(--accent); }
+.logo-city {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-left: 6px;
+  align-self: center;
+}
+
+nav { display: flex; border: 1px solid var(--border); }
+nav button {
+  background: none;
+  border: none;
+  border-right: 1px solid var(--border);
+  padding: 9px 24px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--ink-soft);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+nav button:last-child { border-right: none; }
+nav button.active { background: var(--ink); color: var(--bg); }
+nav button:hover:not(.active) { background: var(--tag); color: var(--ink); }
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.header-date {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.btn-signin {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid var(--border);
+  padding: 8px 18px;
+  cursor: pointer;
+  color: var(--ink-soft);
+  transition: all 0.14s;
+}
+.btn-signin:hover { border-color: var(--ink); color: var(--ink); }
+.btn-signin.in { border-color: var(--green); color: var(--green); }
+
+/* ── MAIN ── */
+main { max-width: 940px; margin: 0 auto; padding: 52px 48px 100px; }
+.panel { display: none; }
+.panel.active { display: block; animation: rise 0.24s ease; }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(9px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── SECTION HEAD ── */
+.section-head {
+  margin-bottom: 32px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.section-head h1, .section-head h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 34px;
+  line-height: 1.1;
+}
+.section-head p {
+  font-size: 13px;
+  color: var(--ink-soft);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 7px;
+}
+.head-right {
+  text-align: right;
+  font-size: 11px;
+  color: var(--ink-soft);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.7;
+}
+
+/* ── RUBRIC NOTE ── */
+.rubric-note {
+  font-size: 14px;
+  color: var(--ink-soft);
+  border-left: 2px solid var(--accent);
+  padding: 10px 18px;
+  background: var(--card);
+  line-height: 1.7;
+  margin-bottom: 26px;
+  font-style: italic;
+}
+
+/* ── FILTERS ── */
+.feed-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.filters { display: flex; gap: 5px; flex-wrap: wrap; }
+.filt {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  background: none;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  color: var(--ink-soft);
+  transition: all 0.13s;
+}
+.filt.on, .filt:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* ── DAY GROUPS ── */
+.day-group { margin-bottom: 32px; }
+.day-label {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  padding-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.day-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── EVENT CARDS ── */
+.event-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.ev-row {
+  background: var(--card);
+  display: grid;
+  grid-template-columns: 72px 1fr 128px;
+  transition: background 0.12s;
+}
+.ev-row:hover { background: #FAF7F1; }
+
+.ev-cal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0 24px 16px;
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.ev-day {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-style: italic;
+  line-height: 1;
+  color: var(--ink);
+}
+.ev-mon {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-top: 3px;
+}
+.ev-time {
+  font-size: 11px;
+  color: var(--ink-faint);
+  margin-top: 7px;
+  text-align: center;
+  line-height: 1.4;
+  font-style: italic;
+}
+
+.ev-body { padding: 22px 26px 22px 24px; }
+
+.ev-cat {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+.ev-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.25;
+  margin-bottom: 5px;
+  color: var(--ink);
+}
+.ev-venue {
+  font-size: 12px;
+  color: var(--ink-mid);
+  margin-bottom: 9px;
+  letter-spacing: 0.02em;
+}
+.ev-desc {
+  font-size: 14px;
+  color: var(--ink-mid);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: 12px;
+}
+.ev-footer {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.ev-tag {
+  font-size: 10px;
+  padding: 2px 9px;
+  background: var(--tag);
+  color: var(--ink-soft);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ev-source {
+  font-size: 12px;
+  color: var(--ink-faint);
+  font-style: italic;
+  text-decoration: none;
+  margin-left: 4px;
+  transition: color 0.13s;
+}
+.ev-source:hover { color: var(--ink-soft); text-decoration: underline; }
+.ev-rubric {
+  font-size: 12px;
+  color: var(--green);
+  font-style: italic;
+  margin-top: 8px;
+}
+
+.ev-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 22px 20px 22px 0;
+  gap: 8px;
+}
+.ev-urgency {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green);
+  text-align: right;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.btn-save {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  padding: 9px 14px;
+  cursor: pointer;
+  transition: background 0.13s;
+  white-space: nowrap;
+  width: 100%;
+}
+.btn-save:hover { background: var(--accent); }
+.btn-save.saved { background: var(--accent); }
+
+.btn-evpage {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: none;
+  color: var(--ink-soft);
+  border: 1px solid var(--border);
+  padding: 9px 14px;
+  cursor: pointer;
+  transition: all 0.13s;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+.btn-evpage:hover { border-color: var(--ink); color: var(--ink); }
+
+/* ── STATE BOXES ── */
+.state-box {
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 80px 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
+.state-box strong {
+  display: block;
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink-mid);
+  margin-bottom: 8px;
+}
+.state-box p { font-size: 14px; font-style: italic; }
+
+/* ── SAVED ── */
+.share-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 14px 22px;
+  margin-bottom: 24px;
+}
+.share-strip span { font-size: 14px; color: var(--ink-soft); font-style: italic; }
+.share-strip strong { color: var(--ink); font-weight: 400; }
+
+/* ── CHAT ── */
+.chat-wrap {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 260px);
+  min-height: 500px;
+}
+
+.chat-intro {
+  margin-bottom: 28px;
+}
+.chat-intro h1 {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 34px;
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.chat-intro p {
+  font-size: 13px;
+  color: var(--ink-soft);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-right: 4px;
+  margin-bottom: 24px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.msg { display: flex; gap: 18px; animation: rise 0.2s ease; }
+
+.msg-who {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  min-width: 40px;
+  padding-top: 4px;
+  flex-shrink: 0;
+}
+.msg-who.bot { color: var(--accent); }
+
+.msg-body { flex: 1; }
+
+.msg-text {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--ink-mid);
+}
+.msg-text.you { font-style: italic; color: var(--ink-soft); }
+.msg-text.bot { color: var(--ink); }
+
+/* Chat event results */
+.chat-results {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.chat-card {
+  background: var(--card);
+  padding: 20px 22px;
+  transition: background 0.12s;
+}
+.chat-card:hover { background: var(--bg); }
+
+.cc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 5px;
+}
+.cc-cat {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.cc-urgency {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green);
+  font-style: italic;
+}
+.cc-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-style: italic;
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+.cc-where { font-size: 12px; color: var(--ink-mid); margin-bottom: 2px; }
+.cc-when { font-size: 12px; color: var(--accent); margin-bottom: 9px; font-style: italic; }
+.cc-desc { font-size: 14px; color: var(--ink-mid); line-height: 1.7; margin-bottom: 13px; }
+.cc-rubric {
+  font-size: 11px;
+  color: var(--green);
+  background: #EBF4EF;
+  padding: 3px 10px;
+  display: inline-block;
+  margin-bottom: 13px;
+  font-style: italic;
+}
+.cc-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.cc-source { font-size: 11px; color: var(--ink-faint); font-style: italic; margin-left: auto; }
+
+/* Thinking dots */
+.dots {
+  display: flex;
+  gap: 5px;
+  padding: 6px 0;
+  align-items: center;
+}
+.dots span {
+  width: 5px; height: 5px;
+  background: var(--ink-faint);
+  border-radius: 50%;
+  animation: pulse 1.1s ease-in-out infinite;
+}
+.dots span:nth-child(2) { animation-delay: 0.18s; }
+.dots span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes pulse {
+  0%,100% { opacity: 0.25; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.35); }
+}
+
+/* Chat input */
+.chat-input-area { border-top: 1px solid var(--border); padding-top: 20px; }
+
+.chat-row {
+  display: flex;
+  border: 1px solid var(--border);
+  background: var(--card);
+  transition: border-color 0.15s;
+  margin-bottom: 14px;
+}
+.chat-row:focus-within { border-color: var(--ink); }
+
+textarea#chat-in {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 14px 18px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  color: var(--ink);
+  outline: none;
+  resize: none;
+  min-height: 52px;
+  max-height: 130px;
+  line-height: 1.5;
+}
+textarea#chat-in::placeholder { color: var(--ink-faint); font-style: italic; }
+
+.chat-send {
+  background: none;
+  border: none;
+  border-left: 1px solid var(--border);
+  padding: 0 22px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.chat-send:hover { background: var(--ink); color: var(--bg); }
+.chat-send:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.sug {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  color: var(--ink-mid);
+  border: 1px solid var(--border);
+  padding: 5px 14px;
+  background: none;
+  cursor: pointer;
+  transition: all 0.13s;
+  font-style: italic;
+}
+.sug:hover { border-color: var(--ink); color: var(--ink); background: var(--tag); }
+
+/* ── HOW WE SELECT ── */
+.rubric-lede {
+  font-size: 15px;
+  color: var(--ink-mid);
+  line-height: 1.8;
+  margin-bottom: 32px;
+  border-left: 2px solid var(--accent);
+  padding-left: 20px;
+  font-style: italic;
+}
+.rubric-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+.r-cell { background: var(--card); padding: 26px 28px; }
+.r-cell h4 {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 13px;
+  font-weight: 400;
+}
+.r-cell p { font-size: 14px; color: var(--ink-mid); line-height: 1.75; }
+.r-cell ul { list-style: none; }
+.r-cell ul li {
+  font-size: 14px;
+  color: var(--ink-mid);
+  line-height: 1.95;
+  padding-left: 18px;
+  position: relative;
+}
+.r-cell ul li::before { position: absolute; left: 0; content: '—'; color: var(--ink-faint); }
+.r-cell ul li.y::before { content: '✓'; color: var(--green); }
+.r-cell ul li.n::before { content: '✕'; color: var(--accent); }
+.r-span { grid-column: span 2; }
+.src-cols { columns: 2; gap: 24px; list-style: none; }
+.src-cols li {
+  font-size: 14px;
+  color: var(--ink-mid);
+  line-height: 2;
+  padding-left: 14px;
+  position: relative;
+  font-style: italic;
+}
+.src-cols li::before { position: absolute; left: 0; content: '→'; color: var(--accent); font-size: 11px; top: 3px; font-style: normal; }
+
+/* ── AUTH OVERLAY ── */
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26,23,20,0.65);
+  z-index: 400;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
+}
+.overlay.open { display: flex; }
+
+.auth-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  width: 380px;
+  padding: 38px;
+  animation: rise 0.2s ease;
+}
+.auth-card h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-style: italic;
+  font-weight: 400;
+  margin-bottom: 7px;
+}
+.auth-card > p { font-size: 14px; color: var(--ink-soft); line-height: 1.7; margin-bottom: 26px; font-style: italic; }
+
+.auth-step { display: none; }
+.auth-step.on { display: block; }
+
+.f-label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+  display: block;
+}
+.f-input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 13px 16px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.14s;
+  margin-bottom: 16px;
+}
+.f-input:focus { border-color: var(--ink); }
+.f-input::placeholder { color: var(--ink-faint); font-style: italic; }
+.f-err { font-size: 13px; color: var(--accent); font-style: italic; min-height: 18px; margin-bottom: 10px; }
+.auth-btns { display: flex; gap: 9px; justify-content: flex-end; }
+
+/* ── SHARE MODAL ── */
+.modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(26,23,20,0.55);
+  z-index: 500;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(3px);
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  max-width: 460px;
+  width: 90%;
+  padding: 36px;
+  animation: rise 0.2s ease;
+}
+.modal h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-style: italic;
+  font-weight: 400;
+  margin-bottom: 7px;
+}
+.modal p { font-size: 14px; color: var(--ink-soft); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+.share-url {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 13px 17px;
+  font-size: 14px;
+  color: var(--ink-mid);
+  margin-bottom: 20px;
+  word-break: break-all;
+  font-style: italic;
+}
+.modal-btns { display: flex; gap: 9px; justify-content: flex-end; }
+
+/* ── BUTTONS ── */
+.btn-p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--bg);
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+.btn-p:hover { background: var(--accent); }
+.btn-g {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: none;
+  color: var(--ink-soft);
+  border: 1px solid var(--border);
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.13s;
+}
+.btn-g:hover { border-color: var(--ink); color: var(--ink); }
+
+@media (max-width: 700px) {
+  header { padding: 14px 20px; flex-wrap: wrap; gap: 10px; }
+  main { padding: 32px 20px 80px; }
+  .ev-row { grid-template-columns: 60px 1fr; }
+  .ev-side { display: none; }
+  .rubric-grid { grid-template-columns: 1fr; }
+  .r-span { grid-column: span 1; }
+  .src-cols { columns: 1; }
+  nav button { padding: 8px 12px; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="demo-bar"><strong>Demo</strong> — events are illustrative of what the live feed looks like</div>
+
+<header>
+  <span class="logo" onclick="goTo('feed', document.querySelector('nav button'))">
+    local<span class="logo-dot">.</span><span class="logo-city">nyc</span>
+  </span>
+  <nav>
+    <button onclick="goTo('ask',this)">Ask</button>
+    <button class="active" onclick="goTo('feed',this)">Feed</button>
+    <button onclick="goTo('saved',this)">Saved <span id="nav-ct" style="color:var(--accent)"></span></button>
+    <button onclick="goTo('rubric',this)">How we select</button>
+  </nav>
+  <div class="header-right">
+    <span class="header-date" id="hdate"></span>
+    <button class="btn-signin" id="signin-btn" onclick="handleAuth()">Sign in</button>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══ ASK ═══ -->
+<div class="panel" id="panel-ask">
+  <div class="chat-wrap">
+    <div class="chat-intro">
+      <h1>What are you looking for?</h1>
+      <p>NYC · next 3 days · temporal events only</p>
+    </div>
+
+    <div id="chat-messages">
+      <div class="msg">
+        <span class="msg-who bot">local</span>
+        <div class="msg-body">
+          <div class="msg-text bot">Tell me what you're after. Art opening, film, performance, a debate, a strange dinner. I only show things with a specific date — not exhibitions you can catch anytime.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <div class="chat-row">
+        <textarea id="chat-in" placeholder="something worth going to tonight…" rows="2" onkeydown="chatKey(event)"></textarea>
+        <button class="chat-send" id="chat-btn" onclick="sendChat()">Send →</button>
+      </div>
+      <div class="suggestions">
+        <button class="sug" onclick="quickAsk('art opening this week')">art opening</button>
+        <button class="sug" onclick="quickAsk('film screening with Q&A')">film + Q&A</button>
+        <button class="sug" onclick="quickAsk('live performance one night only')">live performance</button>
+        <button class="sug" onclick="quickAsk('pop-up dinner or special one-night food event')">dinner / pop-up</button>
+        <button class="sug" onclick="quickAsk('debate or talk or lecture')">debate or talk</button>
+        <button class="sug" onclick="quickAsk('music live show')">music</button>
+        <button class="sug" onclick="quickAsk('surprise me with something unusual')">surprise me</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FEED ═══ -->
+<div class="panel active" id="panel-feed">
+  <div class="section-head">
+    <div>
+      <h1>Next 3 days in New York.</h1>
+      <p>Temporal events only · selected from screened sources</p>
+    </div>
+    <div class="head-right" id="feed-meta"></div>
+  </div>
+
+  <div class="rubric-note">
+    Every event here has a date that makes it meaningless without one. Openings, single screenings, one-night performances — not things you can catch any time.
+  </div>
+
+  <div class="feed-bar">
+    <div class="filters">
+      <button class="filt on" onclick="filter('all',this)">All</button>
+      <button class="filt" onclick="filter('art',this)">Art</button>
+      <button class="filt" onclick="filter('film',this)">Film</button>
+      <button class="filt" onclick="filter('performance',this)">Performance</button>
+      <button class="filt" onclick="filter('food',this)">Food</button>
+      <button class="filt" onclick="filter('talk',this)">Talks</button>
+      <button class="filt" onclick="filter('music',this)">Music</button>
+    </div>
+  </div>
+
+  <div id="feed-content"></div>
+</div>
+
+<!-- ═══ SAVED ═══ -->
+<div class="panel" id="panel-saved">
+  <div class="section-head">
+    <div>
+      <h2>Your saved events.</h2>
+      <p>Save from the feed · share your list</p>
+    </div>
+  </div>
+  <div class="share-strip" id="share-strip" style="display:none">
+    <span>Your list — <strong id="share-ct">0</strong> events</span>
+    <button class="btn-g" onclick="openShare()">Share list →</button>
+  </div>
+  <div id="saved-content"></div>
+</div>
+
+<!-- ═══ HOW WE SELECT ═══ -->
+<div class="panel" id="panel-rubric">
+  <div class="section-head">
+    <div><h2>How we select.</h2><p>The rubric behind every event</p></div>
+  </div>
+  <p class="rubric-lede">
+    The core test is temporal specificity. An event passes if removing the date makes it meaningless. An opening night passes. A gallery show on view doesn't. A single 35mm print screening passes. "Screenings ongoing" doesn't. We cross-reference sources — if a venue's event has been noted by Artforum, Screen Slate, or a comparable publication, it moves up.
+  </p>
+  <div class="rubric-grid">
+    <div class="r-cell">
+      <h4>What passes</h4>
+      <ul>
+        <li class="y">Opening night / vernissage</li>
+        <li class="y">One-night performance or event</li>
+        <li class="y">Limited run — 3 nights or fewer</li>
+        <li class="y">Screening + Q&amp;A or director present</li>
+        <li class="y">Pop-up dinner, one-night kitchen takeover</li>
+        <li class="y">Debate, lecture, notable structured talk</li>
+        <li class="y">Music — first show or rare booking</li>
+        <li class="n">Ongoing exhibition with no opening event</li>
+        <li class="n">Recurring weekly nights</li>
+        <li class="n">Standard restaurant service</li>
+      </ul>
+    </div>
+    <div class="r-cell">
+      <h4>Cross-referenced by</h4>
+      <ul>
+        <li class="y">Artforum events calendar</li>
+        <li class="y">artnet.com/events — gallery openings</li>
+        <li class="y">Screen Slate — film screenings</li>
+        <li class="y">Event noted in editorial press</li>
+        <li class="y">Venue Instagram (66 Greene, Pioneer Works)</li>
+        <li class="n">Generic Eventbrite without primary source</li>
+        <li class="n">Aggregators without original citation</li>
+      </ul>
+    </div>
+    <div class="r-cell">
+      <h4>Venue signal</h4>
+      <p>The location matters. Galleries that get reviewed. Rep cinemas. Concept stores with a programming track record. Restaurants that are themselves a cultural moment. Bookshops and institutions with history. Not hotel ballrooms.</p>
+    </div>
+    <div class="r-cell">
+      <h4>Before it's published</h4>
+      <ul>
+        <li class="y">Confirmed date, address, and time</li>
+        <li class="y">Real source URL — every event</li>
+        <li class="y">Venue details verified</li>
+        <li class="n">No source URL = not published</li>
+        <li class="n">Unverifiable listings excluded</li>
+      </ul>
+    </div>
+    <div class="r-cell r-span">
+      <h4>Sources we watch daily</h4>
+      <ul class="src-cols">
+        <li>screenslate.com</li>
+        <li>artnet.com/events</li>
+        <li>ifccenter.com</li>
+        <li>metrograph.com</li>
+        <li>bam.org</li>
+        <li>pioneerworks.org</li>
+        <li>66greene.com</li>
+        <li>housingworks.org</li>
+        <li>thekitchen.org</li>
+        <li>moma.org / momaps1.org</li>
+        <li>Artforum events calendar</li>
+        <li>Venue Instagram (direct)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- Auth -->
+<div class="overlay" id="auth-ov">
+  <div class="auth-card">
+    <h2>Sign in.</h2>
+    <p>Your phone number. We send a one-time code. No password.</p>
+    <div class="auth-step on" id="s-phone">
+      <label class="f-label">Phone number</label>
+      <input class="f-input" type="tel" id="phone-in" placeholder="+1 212 555 0100" onkeydown="if(event.key==='Enter')doOtp()">
+      <div class="f-err" id="phone-err"></div>
+      <div class="auth-btns">
+        <button class="btn-g" onclick="closeAuth()">Cancel</button>
+        <button class="btn-p" onclick="doOtp()">Send code →</button>
+      </div>
+    </div>
+    <div class="auth-step" id="s-otp">
+      <label class="f-label">6-digit code</label>
+      <input class="f-input" type="text" id="otp-in" placeholder="000000" maxlength="6" onkeydown="if(event.key==='Enter')doVerify()">
+      <div class="f-err" id="otp-err"></div>
+      <div class="auth-btns">
+        <button class="btn-g" onclick="showStep('phone')">Back</button>
+        <button class="btn-p" onclick="doVerify()">Verify →</button>
+      </div>
+    </div>
+    <div class="auth-step" id="s-done">
+      <p style="margin:0 0 20px;font-style:italic">You're in.</p>
+      <div class="auth-btns"><button class="btn-p" onclick="closeAuth()">Continue →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- Share modal -->
+<div class="modal-bg" id="share-modal">
+  <div class="modal">
+    <h3>Share your list.</h3>
+    <p>A direct link to your saved events. Anyone with the link sees your full feed.</p>
+    <div class="share-url" id="share-url-txt">local.nyc/list/…</div>
+    <div class="modal-btns">
+      <button class="btn-g" onclick="closeShare()">Close</button>
+      <button class="btn-p" id="copy-btn" onclick="copyLink()">Copy link</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════
+// DATA
+// ════════════════════════════
+function daysFromNow(n) {
+  const d = new Date(); d.setDate(d.getDate()+n); return d;
+}
+const D = [daysFromNow(0), daysFromNow(1), daysFromNow(2)];
+
+function fmt(d)  { return d.toISOString().slice(0,10); }
+function dNum(d) { return d.getDate(); }
+function dMon(d) { return d.toLocaleDateString('en-US',{month:'short'}); }
+function dName(d) {
+  const t  = new Date(); t.setHours(0,0,0,0);
+  const t2 = new Date(t); t2.setDate(t2.getDate()+1);
+  const x  = new Date(d); x.setHours(0,0,0,0);
+  if (x.getTime()===t.getTime())  return 'Tonight';
+  if (x.getTime()===t2.getTime()) return 'Tomorrow';
+  return d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+}
+
+const EVENTS = [
+  { id:'e1', category:'art', title:'Cecily Brown: New Paintings — Opening', venue:'Karma', address:'172 E 2nd St, Manhattan', date:fmt(D[0]), dateObj:D[0], time:'6–8pm', description:'Opening reception for Brown\'s new body of work — large-scale paintings collapsing figure and ground. The run continues for six weeks, but tonight is the room before the reviews settle in.', urgency:'Opening night', tags:['painting','opening','artforum noted'], source_name:'artnet events', source_url:'https://www.artnet.com/events/new-york/gallery-openings/', rubric_reason:'Opening night at reviewed gallery, sourced from artnet events' },
+  { id:'e2', category:'film', title:'Oscar Nominated Shorts: Live Action + Discussion', venue:'IFC Center', address:'323 Sixth Ave, Manhattan', date:fmt(D[0]), dateObj:D[0], time:'7:15pm', description:'Full program of this year\'s live action nominees — five films, one sitting. Post-screening discussion with a programmer. These leave theaters fast once the ceremony passes.', urgency:'Limited run', tags:['screening','awards season','Q&A'], source_name:'IFC Center', source_url:'https://www.ifccenter.com', rubric_reason:'Rep cinema, awards-season limited run, post-screening discussion' },
+  { id:'e3', category:'performance', title:'Body as Archive — Live Performance Commission', venue:'66 Greene', address:'66 Greene St, Manhattan', date:fmt(D[0]), dateObj:D[0], time:'8pm sharp', description:'A single-evening performance commission inside the Greene St concept space. Three artists, one continuous durational work. Doors close at 8 — 66 Greene is uncompromising about that.', urgency:'One night only', tags:['performance art','one night only','concept space'], source_name:'66 Greene', source_url:'https://66greene.com', rubric_reason:'One-night commission at known concept space' },
+  { id:'e4', category:'film', title:'Sans Soleil — Chris Marker, 35mm', venue:'Metrograph', address:'7 Ludlow St, Manhattan', date:fmt(D[1]), dateObj:D[1], time:'9:30pm', description:'A restored 35mm print, one screening. Marker\'s essay film holds up differently projected than streamed — the grain is part of the argument. This print has shown rarely since its 2023 restoration.', urgency:'Single screening', tags:['35mm','repertory','restored print'], source_name:'Screen Slate', source_url:'https://www.screenslate.com', rubric_reason:'Single 35mm screening, rep cinema, Screen Slate sourced' },
+  { id:'e5', category:'talk', title:'The Ethics of Sports Gambling — Oxford Debate', venue:'Housing Works Bookstore', address:'126 Crosby St, Manhattan', date:fmt(D[1]), dateObj:D[1], time:'7pm', description:'Four speakers, two positions, audience vote. Oxford format: motion proposed, argued, rebutted, voted on. Free admission. The motion concerns whether legalized betting has broken how we watch sport.', urgency:'', tags:['debate','oxford format','live argument'], source_name:'Housing Works', source_url:'https://www.housingworks.org/events', rubric_reason:'Structured debate at established cultural bookshop, specific date' },
+  { id:'e6', category:'art', title:'Rashid Johnson: Stranger — Opening Reception', venue:'Hauser & Wirth', address:'548 W 22nd St, Manhattan', date:fmt(D[1]), dateObj:D[1], time:'6–8pm', description:'Opening night for Johnson\'s new sculptural and video works. The show follows months of press speculation about a shift in his practice — this is the first public look.', urgency:'Opening night', tags:['opening','sculpture','video'], source_name:'artnet events', source_url:'https://www.artnet.com/events/new-york/gallery-openings/', rubric_reason:'Opening night at major gallery, extensive press lead-up' },
+  { id:'e7', category:'food', title:'Noma Alumni Collective — One Night Kitchen', venue:'The Smile', address:'26 Bond St, Manhattan', date:fmt(D[1]), dateObj:D[1], time:'7pm & 9:30pm', description:'A traveling Danish chef collective takes over the Bond St kitchen for one night. Fixed menu, 8 courses. The 9:30 seating still had reservations available at time of listing.', urgency:'Few spots left', tags:['pop-up','dinner','one night only'], source_name:'Resy', source_url:'https://resy.com', rubric_reason:'Verified one-night pop-up, sourced via Resy, known venue' },
+  { id:'e8', category:'music', title:'Junior Mack — Early Session', venue:'Terra Blues', address:'149 Bleecker St, Manhattan', date:fmt(D[2]), dateObj:D[2], time:'7pm', description:'Junior Mack\'s early session at Terra Blues, the West Village room that keeps the format honest. He plays here occasionally but not on a fixed schedule. Two sets, cash bar, no cover for the first set.', urgency:'', tags:['live music','blues','west village'], source_name:'Terra Blues', source_url:'https://www.terrablues.com', rubric_reason:'Non-recurring booking at established venue' },
+  { id:'e9', category:'talk', title:'Hilton Als: On Criticism and Memory', venue:'Pioneer Works', address:'159 Pioneer St, Red Hook, Brooklyn', date:fmt(D[2]), dateObj:D[2], time:'7:30pm', description:'The New Yorker theater critic in conversation about his new book and what criticism can do that documentation cannot. Moderated. Ticket required — link on Pioneer Works site.', urgency:'', tags:['talk','criticism','literature','brooklyn'], source_name:'Pioneer Works', source_url:'https://pioneerworks.org/programs', rubric_reason:'Specific date, notable speaker, established institution' },
+  { id:'e10', category:'film', title:'Daisies — Věra Chytilová, 35mm', venue:'Metrograph', address:'7 Ludlow St, Manhattan', date:fmt(D[2]), dateObj:D[2], time:'4pm', description:'Chytilová\'s 1966 Czech New Wave film — rarely screened in 35mm in the US. This matinee only is in 35mm; the evening screenings are DCP. Part of the current retrospective.', urgency:'One screening', tags:['35mm','czech new wave','rep cinema'], source_name:'Screen Slate', source_url:'https://www.screenslate.com', rubric_reason:'Single 35mm screening within rep series, Screen Slate sourced' },
+  { id:'e11', category:'art', title:'Gabriel Orozco: New Works — Opening', venue:'Marian Goodman Gallery', address:'24 W 57th St, Manhattan', date:fmt(D[2]), dateObj:D[2], time:'5–7pm', description:'Opening for Orozco\'s new series of drawings and sculptures — his first show here in three years. The work responds to patterns in natural systems. Opening night only.', urgency:'Opening night', tags:['opening','drawing','sculpture'], source_name:'artnet events', source_url:'https://www.artnet.com/events/new-york/gallery-openings/', rubric_reason:'Opening night at major gallery, three-year gap since last show' }
+];
+
+// Grouped by category for chat responses
+const BY_CAT = {
+  art:         EVENTS.filter(e=>e.category==='art'),
+  film:        EVENTS.filter(e=>e.category==='film'),
+  performance: EVENTS.filter(e=>e.category==='performance'),
+  food:        EVENTS.filter(e=>e.category==='food'),
+  talk:        EVENTS.filter(e=>e.category==='talk'),
+  music:       EVENTS.filter(e=>e.category==='music'),
+};
+
+// ════════════════════════════
+// STATE
+// ════════════════════════════
+let saved    = new Set(JSON.parse(localStorage.getItem('local-saved')||'[]'));
+let signedIn = false;
+let feedFilt = 'all';
+let chatBusy = false;
+
+// ════════════════════════════
+// INIT
+// ════════════════════════════
+document.getElementById('hdate').textContent =
+  new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+
+const span = `${D[0].toLocaleDateString('en-US',{month:'short',day:'numeric'})}–${D[2].toLocaleDateString('en-US',{month:'short',day:'numeric'})}`;
+document.getElementById('feed-meta').innerHTML = span + '<br>Updated daily at 7am';
+
+updateCount();
+renderFeed();
+
+// ════════════════════════════
+// NAV
+// ════════════════════════════
+function goTo(name, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name==='saved') renderSaved();
+}
+
+// ════════════════════════════
+// FEED
+// ════════════════════════════
+function filter(cat, btn) {
+  feedFilt = cat;
+  document.querySelectorAll('.filt').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderFeed();
+}
+
+function renderFeed() {
+  const evs = feedFilt==='all' ? EVENTS : EVENTS.filter(e=>e.category===feedFilt);
+  const el  = document.getElementById('feed-content');
+  if (!evs.length) {
+    el.innerHTML = `<div class="state-box"><strong>Nothing here right now.</strong><p>Try another filter.</p></div>`;
+    return;
+  }
+  const groups = {};
+  evs.forEach(e => { if(!groups[e.date]) groups[e.date]=[]; groups[e.date].push(e); });
+  el.innerHTML = Object.entries(groups).map(([date,evs2])=>`
+    <div class="day-group">
+      <div class="day-label">${dName(evs2[0].dateObj)}</div>
+      <div class="event-grid">${evs2.map(evRow).join('')}</div>
+    </div>`).join('');
+  el.querySelectorAll('[data-sid]').forEach(b=>b.addEventListener('click',()=>toggleSave(b.dataset.sid,b)));
+}
+
+function evRow(ev) {
+  const s = saved.has(ev.id);
+  return `<div class="ev-row">
+    <div class="ev-cal">
+      <div class="ev-day">${dNum(ev.dateObj)}</div>
+      <div class="ev-mon">${dMon(ev.dateObj)}</div>
+      <div class="ev-time">${esc(ev.time)}</div>
+    </div>
+    <div class="ev-body">
+      <div class="ev-cat">${ev.category}</div>
+      <div class="ev-title">${esc(ev.title)}</div>
+      <div class="ev-venue">${esc(ev.venue)} · ${esc(ev.address)}</div>
+      <div class="ev-desc">${esc(ev.description)}</div>
+      <div class="ev-footer">
+        ${ev.tags.map(t=>`<span class="ev-tag">${esc(t)}</span>`).join('')}
+        <a class="ev-source" href="${ea(ev.source_url)}" target="_blank" rel="noopener">via ${esc(ev.source_name)}</a>
+      </div>
+      ${ev.rubric_reason?`<div class="ev-rubric">✓ ${esc(ev.rubric_reason)}</div>`:''}
+    </div>
+    <div class="ev-side">
+      ${ev.urgency?`<div class="ev-urgency">${esc(ev.urgency)}</div>`:'<div></div>'}
+      <button class="btn-save${s?' saved':''}" data-sid="${ev.id}">${s?'Saved ✓':'+ Save'}</button>
+      <a class="btn-evpage" href="${ea(ev.source_url)}" target="_blank" rel="noopener">Event page →</a>
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════
+// CHAT
+// ════════════════════════════
+function chatKey(e) {
+  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+}
+function quickAsk(q) {
+  document.getElementById('chat-in').value = q;
+  sendChat();
+}
+
+function sendChat() {
+  if (chatBusy) return;
+  const inp = document.getElementById('chat-in');
+  const q   = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  chatBusy = true;
+  document.getElementById('chat-btn').disabled = true;
+
+  appendMsg('you', q, true);
+  const thinking = appendThinking();
+
+  setTimeout(() => {
+    thinking.remove();
+    const { note, results } = getResponse(q);
+    appendMsg('local', note, false, results);
+    chatBusy = false;
+    document.getElementById('chat-btn').disabled = false;
+  }, 700 + Math.random()*400);
+}
+
+function getResponse(q) {
+  const l = q.toLowerCase();
+  let results = [];
+  let note = '';
+
+  if (l.match(/art|opening|gallery|paint|sculpt/)) {
+    results = BY_CAT.art;
+    note = 'Two openings worth the trip. Both have a specific reason to go tonight rather than during the run.';
+  } else if (l.match(/film|screen|cinema|movie|35mm|q&a|director/)) {
+    results = BY_CAT.film;
+    note = 'Three screenings. One is awards-adjacent with a discussion after. Two are 35mm — that distinction matters.';
+  } else if (l.match(/perform|live art|commission|durational/)) {
+    results = BY_CAT.performance;
+    note = 'One thing. It only happens once.';
+  } else if (l.match(/food|dinner|eat|chef|pop.?up|kitchen/)) {
+    results = BY_CAT.food;
+    note = 'A genuine pop-up — not a restaurant doing a special night. A separate collective taking over a room.';
+  } else if (l.match(/debate|talk|lecture|discuss|critic|conversation/)) {
+    results = BY_CAT.talk;
+    note = 'Two very different rooms. The Oxford-format debate is the one I\'d go to.';
+  } else if (l.match(/music|blues|jazz|band|concert|show/)) {
+    results = BY_CAT.music;
+    note = 'One live show worth noting this week.';
+  } else if (l.match(/surprise|unusual|strange|anything|everything|what.?s on/)) {
+    results = EVENTS.slice(0,5);
+    note = 'The things I\'d flag right now — each has a date that matters.';
+  } else {
+    results = EVENTS.slice(0,4);
+    note = 'Here\'s what\'s actually happening in the next three days.';
+  }
+
+  return { note, results };
+}
+
+function appendMsg(who, text, isUser, results=[]) {
+  const msgs = document.getElementById('chat-messages');
+  const el   = document.createElement('div');
+  el.className = 'msg';
+
+  let cards = '';
+  if (results.length) {
+    cards = `<div class="chat-results">${results.map(chatCard).join('')}</div>`;
+  }
+
+  el.innerHTML = `
+    <span class="msg-who ${isUser?'':'bot'}">${who}</span>
+    <div class="msg-body">
+      <div class="msg-text ${isUser?'you':'bot'}">${esc(text)}</div>
+      ${cards}
+    </div>`;
+
+  msgs.appendChild(el);
+  el.querySelectorAll('[data-sid]').forEach(b=>b.addEventListener('click',()=>toggleSave(b.dataset.sid,b)));
+  el.scrollIntoView({behavior:'smooth',block:'end'});
+}
+
+function appendThinking() {
+  const msgs = document.getElementById('chat-messages');
+  const el   = document.createElement('div');
+  el.className = 'msg';
+  el.innerHTML = `<span class="msg-who bot">local</span><div class="msg-body"><div class="dots"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(el);
+  el.scrollIntoView({behavior:'smooth',block:'end'});
+  return el;
+}
+
+function chatCard(ev) {
+  const s = saved.has(ev.id);
+  return `<div class="chat-card">
+    <div class="cc-top">
+      <span class="cc-cat">${ev.category}</span>
+      ${ev.urgency?`<span class="cc-urgency">${esc(ev.urgency)}</span>`:''}
+    </div>
+    <div class="cc-title">${esc(ev.title)}</div>
+    <div class="cc-where">${esc(ev.venue)} · ${esc(ev.address)}</div>
+    <div class="cc-when">${esc(ev.date)} · ${esc(ev.time)}</div>
+    <div class="cc-desc">${esc(ev.description)}</div>
+    ${ev.rubric_reason?`<div class="cc-rubric">✓ ${esc(ev.rubric_reason)}</div>`:''}
+    <div class="cc-actions">
+      <button class="btn-save${s?' saved':''}" data-sid="${ev.id}">${s?'Saved ✓':'+ Save'}</button>
+      <a class="btn-evpage" href="${ea(ev.source_url)}" target="_blank" rel="noopener" style="padding:9px 14px;font-size:12px">Event page →</a>
+      <span class="cc-source">via ${esc(ev.source_name)}</span>
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════
+// SAVE
+// ════════════════════════════
+function toggleSave(id, btn) {
+  if (!signedIn) { openAuth(); return; }
+  saved.has(id) ? saved.delete(id) : saved.add(id);
+  localStorage.setItem('local-saved', JSON.stringify([...saved]));
+  updateCount();
+  const now = saved.has(id);
+  document.querySelectorAll(`[data-sid="${id}"]`).forEach(b=>{
+    b.textContent = now?'Saved ✓':'+ Save';
+    now ? b.classList.add('saved') : b.classList.remove('saved');
+  });
+  if (document.getElementById('panel-saved').classList.contains('active')) renderSaved();
+}
+
+function updateCount() {
+  const n = saved.size;
+  document.getElementById('nav-ct').textContent = n>0?`(${n})`:'';
+}
+
+// ════════════════════════════
+// SAVED
+// ════════════════════════════
+function renderSaved() {
+  const content = document.getElementById('saved-content');
+  const strip   = document.getElementById('share-strip');
+  if (!signedIn) {
+    strip.style.display='none';
+    content.innerHTML = `<div class="state-box"><strong>Sign in to save events.</strong><p>Your list lives here.</p></div>`;
+    return;
+  }
+  const evs = EVENTS.filter(e=>saved.has(e.id));
+  if (!evs.length) {
+    strip.style.display='none';
+    content.innerHTML = `<div class="state-box"><strong>Nothing saved yet.</strong><p>Save events from the feed.</p></div>`;
+    return;
+  }
+  strip.style.display='flex';
+  document.getElementById('share-ct').textContent = evs.length;
+  content.innerHTML = `<div class="event-grid">${evs.map(evRow).join('')}</div>`;
+  content.querySelectorAll('[data-sid]').forEach(b=>b.addEventListener('click',()=>toggleSave(b.dataset.sid,b)));
+}
+
+// ════════════════════════════
+// SHARE
+// ════════════════════════════
+function openShare() {
+  const t = Math.random().toString(36).slice(2,10);
+  document.getElementById('share-url-txt').textContent = `local.nyc/list/${t}`;
+  document.getElementById('share-modal').classList.add('open');
+}
+function closeShare() { document.getElementById('share-modal').classList.remove('open'); }
+function copyLink() {
+  navigator.clipboard.writeText('https://'+document.getElementById('share-url-txt').textContent).catch(()=>{});
+  const b = document.getElementById('copy-btn');
+  b.textContent='Copied ✓'; setTimeout(()=>b.textContent='Copy link',2200);
+}
+document.getElementById('share-modal').addEventListener('click',e=>{
+  if(e.target===document.getElementById('share-modal')) closeShare();
+});
+
+// ════════════════════════════
+// AUTH (demo)
+// ════════════════════════════
+function handleAuth() {
+  if (signedIn) {
+    if (confirm('Sign out?')) {
+      signedIn=false; saved=new Set();
+      localStorage.removeItem('local-saved');
+      updateCount();
+      document.getElementById('signin-btn').textContent='Sign in';
+      document.getElementById('signin-btn').classList.remove('in');
+    }
+  } else { openAuth(); }
+}
+function openAuth() {
+  showStep('phone');
+  ['phone-err','otp-err'].forEach(id=>document.getElementById(id).textContent='');
+  ['phone-in','otp-in'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('auth-ov').classList.add('open');
+  setTimeout(()=>document.getElementById('phone-in').focus(),120);
+}
+function closeAuth() { document.getElementById('auth-ov').classList.remove('open'); }
+function showStep(s) {
+  document.querySelectorAll('.auth-step').forEach(el=>el.classList.remove('on'));
+  document.getElementById('s-'+s).classList.add('on');
+}
+function doOtp() {
+  const p = document.getElementById('phone-in').value.trim();
+  if (!p) { document.getElementById('phone-err').textContent='Enter your number'; return; }
+  document.getElementById('phone-err').textContent='';
+  showStep('otp');
+  setTimeout(()=>document.getElementById('otp-in').focus(),100);
+}
+function doVerify() {
+  const c = document.getElementById('otp-in').value.trim();
+  if (c.length<4) { document.getElementById('otp-err').textContent='Enter the code'; return; }
+  signedIn=true;
+  document.getElementById('signin-btn').textContent='Signed in ✓';
+  document.getElementById('signin-btn').classList.add('in');
+  showStep('done');
+  setTimeout(()=>closeAuth(),1600);
+}
+document.getElementById('auth-ov').addEventListener('click',e=>{
+  if(e.target===document.getElementById('auth-ov')) closeAuth();
+});
+
+// ════════════════════════════
+// UTILS
+// ════════════════════════════
+function esc(s='') {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function ea(s='') { return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+</script>
+</body>
+</html>
