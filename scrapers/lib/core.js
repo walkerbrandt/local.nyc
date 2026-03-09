@@ -38,11 +38,37 @@ export async function insertHappening(event) {
 }
 
 export async function startRun(sourceName) {
-  const { data } = await supabase.from('scrape_runs').insert({ source_name: sourceName, status: 'running' }).select('id').single()
-  return data.id
+  try {
+    const { data, error } = await supabase
+      .from('scrape_runs')
+      .insert({ source_name: sourceName, status: 'running' })
+      .select('id')
+      .single()
+
+    if (error) {
+      console.error(`[scrape_runs] startRun failed for "${sourceName}": ${error.message}`)
+      return null
+    }
+
+    const runId = data?.id ?? null
+    if (!runId) {
+      console.error(`[scrape_runs] startRun returned no id for "${sourceName}"`)
+      return null
+    }
+
+    return runId
+  } catch (err) {
+    console.error(`[scrape_runs] startRun threw for "${sourceName}":`, err)
+    return null
+  }
 }
 
 export async function finishRun(runId, { found, newCount, error } = {}) {
+  if (!runId) {
+    console.error('[scrape_runs] finishRun called without a valid runId, skipping update')
+    return
+  }
+
   await supabase.from('scrape_runs').update({
     finished_at: new Date().toISOString(), events_found: found || 0,
     events_new: newCount || 0, status: error ? 'error' : 'success', error_msg: error || null
