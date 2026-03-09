@@ -1,9 +1,12 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
-export default function AdminQueuePage() {
+export const dynamic = 'force-dynamic'
+
+function AdminQueuePage() {
   const [happenings, setHappenings] = useState([])
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(null)
@@ -119,3 +122,5 @@ export default function AdminQueuePage() {
     </div>
   )
 }
+
+export default dynamic(() => Promise.resolve(AdminQueuePage), { ssr: false })
