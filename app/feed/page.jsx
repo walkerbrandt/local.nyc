@@ -3,11 +3,6 @@
 import { useEffect, useState, useMemo } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-)
-
 const CATEGORIES = [
   'Art Opening',
   'Film Q&A',
@@ -45,6 +40,10 @@ export default function FeedPage() {
   const [search, setSearch] = useState('')
 
   useEffect(() => {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    )
     async function fetchFeed() {
       const today = new Date().toISOString().slice(0, 10)
       const { data, error } = await supabase

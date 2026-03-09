@@ -3,17 +3,16 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-)
-
 export default function AdminQueuePage() {
   const [happenings, setHappenings] = useState([])
   const [loading, setLoading] = useState(true)
   const [updating, setUpdating] = useState(null)
 
   useEffect(() => {
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    )
     async function fetchQueue() {
       const { data, error } = await supabase
         .from('happenings')
