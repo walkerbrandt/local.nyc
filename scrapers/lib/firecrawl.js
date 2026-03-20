@@ -38,6 +38,8 @@ export async function scrapeWithFirecrawl(url, sourceName) {
     },
     body: JSON.stringify({
       url,
+      waitFor: 3000,
+      onlyMainContent: false,
       formats: ['extract'],
       extract: {
         schema: EVENT_SCHEMA,
@@ -57,6 +59,7 @@ Focus on one-time or limited-run events rather than ongoing exhibitions.`
     return []
   }
 
+  console.log('[Firecrawl] Raw response:', JSON.stringify(data).slice(0, 500))
   const events = data.extract?.events || []
   console.log(`  [Firecrawl] Found ${events.length} events from ${sourceName}`)
 
