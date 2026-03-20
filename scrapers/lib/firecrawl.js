@@ -4,28 +4,12 @@
 
 const FIRECRAWL_API = 'https://api.firecrawl.dev/v1'
 
-// The schema we want extracted from every events page
-const EVENT_SCHEMA = {
-  type: 'object',
-  properties: {
-    events: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          title:       { type: 'string', description: 'Name of the event or film or performance' },
-          venue:       { type: 'string', description: 'Name of the venue or location' },
-          date:        { type: 'string', description: 'Date of the event in any format' },
-          time:        { type: 'string', description: 'Time of the event e.g. 7pm, 7:30 PM' },
-          description: { type: 'string', description: 'Short description or summary of the event' },
-          url:         { type: 'string', description: 'URL link to the event detail page' },
-          image_url:   { type: 'string', description: 'URL of the event image if available' },
-        },
-        required: ['title']
-      }
-    }
-  }
-}
+const EXTRACTION_PROMPT = `You are extracting NYC cultural events from markdown content.
+Return JSON only with this shape: {"events":[{"title":"","venue":"","date":"","time":"","description":"","url":"","image_url":""}]}
+Extract all upcoming events, performances, screenings, concerts, talks, openings, and happenings.
+For each event extract the title, venue, date, time, description, and URL when available.
+Only extract actual events with specific dates — not general info pages or evergreen content.
+Focus on one-time or limited-run events rather than ongoing exhibitions.`
 
 export async function scrapeWithFirecrawl(url, sourceName) {
   console.log(`  [Firecrawl] Scraping ${sourceName}: ${url}`)
@@ -40,15 +24,7 @@ export async function scrapeWithFirecrawl(url, sourceName) {
       url,
       waitFor: 3000,
       onlyMainContent: false,
-      formats: ['extract'],
-      extract: {
-        schema: EVENT_SCHEMA,
-        systemPrompt: `You are extracting NYC cultural events from a webpage. 
-Extract all upcoming events, performances, screenings, concerts, talks, openings, and happenings.
-For each event extract the title, venue, date, time, description, and URL.
-Only extract actual events with specific dates — not general info pages or evergreen content.
-Focus on one-time or limited-run events rather than ongoing exhibitions.`
-      }
+      formats: ['markdown']
     })
   })
 
@@ -59,8 +35,38 @@ Focus on one-time or limited-run events rather than ongoing exhibitions.`
     return []
   }
 
-  console.log('[Firecrawl] Raw response:', JSON.stringify(data).slice(0, 500))
-  const events = data.extract?.events || []
+  const markdown = data.markdown || data.data?.markdown || ''
+  if (!markdown) {
+    console.log(`  [Firecrawl] No markdown returned for ${sourceName}`)
+    return []
+  }
+
+  const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.ANTHROPIC_API_KEY,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 1200,
+      system: EXTRACTION_PROMPT,
+      messages: [{ role: 'user', content: `Source: ${sourceName}\nURL: ${url}\n\nMarkdown:\n${markdown.slice(0, 120000)}` }]
+    })
+  })
+
+  const aiData = await aiRes.json()
+  console.log('[Firecrawl] Raw response:', JSON.stringify(aiData).slice(0, 500))
+  const aiText = aiData.content?.[0]?.text || '{}'
+  let parsed = {}
+  try {
+    parsed = JSON.parse(aiText)
+  } catch {
+    parsed = {}
+  }
+
+  const events = parsed.events || []
   console.log(`  [Firecrawl] Found ${events.length} events from ${sourceName}`)
 
   // Normalize to our standard format

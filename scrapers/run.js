@@ -12,7 +12,6 @@ const SOURCES = [
   { name: 'Anthology Film Archives', url: 'https://anthologyfilmarchives.org/film_screenings' },
   { name: 'Artforum Artguide',       url: 'https://www.artforum.com/artguide/new-york/' },
   { name: 'e-flux',                  url: 'https://www.e-flux.com/announcements/' },
-  { name: 'Hyperallergic',           url: 'https://hyperallergic.com/events/' },
   { name: 'Pioneer Works',           url: 'https://pioneerworks.org/programs' },
   { name: 'The Shed',                url: 'https://theshed.org/program' },
   { name: 'Whitney Museum',          url: 'https://whitney.org/events/' },
