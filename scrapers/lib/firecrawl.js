@@ -40,6 +40,7 @@ export async function scrapeWithFirecrawl(url, sourceName) {
     console.log(`  [Firecrawl] No markdown returned for ${sourceName}`)
     return []
   }
+  const truncatedMarkdown = markdown.slice(0, 15000)
 
   const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -52,16 +53,17 @@ export async function scrapeWithFirecrawl(url, sourceName) {
       model: 'claude-sonnet-4-5',
       max_tokens: 1200,
       system: EXTRACTION_PROMPT,
-      messages: [{ role: 'user', content: `Source: ${sourceName}\nURL: ${url}\n\nMarkdown:\n${markdown.slice(0, 120000)}` }]
+      messages: [{ role: 'user', content: `Source: ${sourceName}\nURL: ${url}\n\nMarkdown:\n${truncatedMarkdown}` }]
     })
   })
 
   const aiData = await aiRes.json()
   console.log('[Firecrawl] Raw response:', JSON.stringify(aiData).slice(0, 500))
-  const aiText = aiData.content?.[0]?.text || '{}'
+  const text = aiData.content?.[0]?.text || '{}'
+  const clean = text.replace(/```json|```/g, '').trim()
   let parsed = {}
   try {
-    parsed = JSON.parse(aiText)
+    parsed = JSON.parse(clean)
   } catch {
     parsed = {}
   }
