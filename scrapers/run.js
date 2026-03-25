@@ -72,7 +72,7 @@ async function main() {
       console.error(`  ❌ ${source.name} failed:`, err.message)
     }
 
-    await sleep(1000)
+    await sleep(3000)
   }
 
   console.log('\n✅ scrape complete\n')

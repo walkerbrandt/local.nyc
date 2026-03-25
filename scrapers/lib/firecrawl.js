@@ -1,7 +1,4 @@
 // scrapers/lib/firecrawl.js
-// Universal AI-powered scraper using Firecrawl
-// Replaces all individual source scrapers
-
 const FIRECRAWL_API = 'https://api.firecrawl.dev/v1'
 
 const EXTRACTION_PROMPT = `You are extracting NYC cultural events from markdown content.
@@ -10,6 +7,31 @@ Extract all upcoming events, performances, screenings, concerts, talks, openings
 For each event extract the title, venue, date, time, description, and URL when available.
 Only extract actual events with specific dates — not general info pages or evergreen content.
 Focus on one-time or limited-run events rather than ongoing exhibitions.`
+
+const sleep = ms => new Promise(r => setTimeout(r, ms))
+
+async function callClaudeWithRetry(payload, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify(payload)
+    })
+    const data = await res.json()
+    if (data.type === 'error' && data.error?.type === 'overloaded_error') {
+      console.log(`  [Claude] Overloaded, retrying in 10s (attempt ${i + 1}/${retries})`)
+      await sleep(10000)
+      continue
+    }
+    return data
+  }
+  console.log(`  [Claude] All retries failed, skipping source`)
+  return null
+}
 
 export async function scrapeWithFirecrawl(url, sourceName) {
   console.log(`  [Firecrawl] Scraping ${sourceName}: ${url}`)
@@ -40,25 +62,18 @@ export async function scrapeWithFirecrawl(url, sourceName) {
     console.log(`  [Firecrawl] No markdown returned for ${sourceName}`)
     return []
   }
+
   const truncatedMarkdown = markdown.slice(0, 15000)
 
-  const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': process.env.ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 1200,
-      system: EXTRACTION_PROMPT,
-      messages: [{ role: 'user', content: `Source: ${sourceName}\nURL: ${url}\n\nMarkdown:\n${truncatedMarkdown}` }]
-    })
+  const aiData = await callClaudeWithRetry({
+    model: 'claude-sonnet-4-5',
+    max_tokens: 1200,
+    system: EXTRACTION_PROMPT,
+    messages: [{ role: 'user', content: `Source: ${sourceName}\nURL: ${url}\n\nMarkdown:\n${truncatedMarkdown}` }]
   })
 
-  const aiData = await aiRes.json()
-  console.log('[Firecrawl] Raw response:', JSON.stringify(aiData).slice(0, 500))
+  if (!aiData) return []
+
   const text = aiData.content?.[0]?.text || '{}'
   const clean = text.replace(/```json|```/g, '').trim()
   let parsed = {}
@@ -71,7 +86,6 @@ export async function scrapeWithFirecrawl(url, sourceName) {
   const events = parsed.events || []
   console.log(`  [Firecrawl] Found ${events.length} events from ${sourceName}`)
 
-  // Normalize to our standard format
   return events.map(e => ({
     title:       e.title,
     venue:       e.venue || null,
